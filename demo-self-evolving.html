@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Evolving AI Demo - Robbie Boo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --border: #222;
+            --accent: #00d4aa;
+            --accent-2: #ff6b6b;
+            --text: #fff;
+            --text-dim: #888;
+        }
+        
+        body {
+            font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: var(--text-dim);
+            margin-bottom: 32px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4aa, #00aaff);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        
+        /* Demo Section */
+        .demo-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .demo-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Loop Animation */
+        .loop-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 32px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .loop-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .loop-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .loop-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        
+        .loop-arrow {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+        
+        /* Feedback Items */
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .feedback-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .feedback-type {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .feedback-type.improvement {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--accent);
+        }
+        
+        .feedback-type.error {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--accent-2);
+        }
+        
+        .feedback-time {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        
+        .feedback-text {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        /* Performance Graph */
+        .graph {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 24px;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        
+        .graph-bar {
+            flex: 1;
+            background: var(--accent);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s;
+        }
+        
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .metric-title {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .metric-change {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+        
+        /* Code */
+        .code {
+            background: #0d0d0d;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre;
+            color: #a0a0a0;
+        }
+        
+        .code .keyword { color: #ff79c6; }
+        .code .string { color: #f1fa8c; }
+        .code .func { color: #50fa7b; }
+        .code .comment { color: #6272a4; }
+        
+        @media (max-width: 600px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .loop-container { flex-direction: column; }
+            .loop-arrow { transform: rotate(90deg); }
+            .metrics { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <span class="badge">🧬 Self-Evolving AI Demo</span>
+    
+    <h1>Self-Evolving Agent System</h1>
+    <p class="subtitle">Autonomous improvement through feedback loops</p>
+    
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value">2.4M</div>
+            <div class="stat-label">Feedback Points</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">+29%</div>
+            <div class="stat-label">Accuracy Gain</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">18h</div>
+            <div class="stat-label">Auto-Training</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">97.3%</div>
+            <div class="stat-label">Current Score</div>
+        </div>
+    </div>
+    
+    <!-- Self-Evolution Loop -->
+    <div class="demo-section">
+        <h2>🔄 Self-Evolution Loop</h2>
+        <div class="loop-container">
+            <div class="loop-step">
+                <div class="loop-icon">📥</div>
+                <div class="loop-label">Collect</div>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step">
+                <div class="loop-icon">📊</div>
+                <div class="loop-label">Analyze</div>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step">
+                <div class="loop-icon">🎯</div>
+                <div class="loop-label">Optimize</div>
+            </div>
+            <div class="loop-arrow">→</div>
+            <div class="loop-step">
+                <div class="loop-icon">🔄</div>
+                <div class="loop-label">Deploy</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Live Feedback -->
+    <div class="demo-section">
+        <h2>📝 Real-Time Feedback Processing</h2>
+        <div class="feedback-list">
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <span class="feedback-type improvement">Improvement</span>
+                    <span class="feedback-time">2s ago</span>
+                </div>
+                <div class="feedback-text">Agent improved code generation: +2.3% on LeetCode benchmarks</div>
+            </div>
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <span class="feedback-type error">Error Pattern</span>
+                    <span class="feedback-time">5s ago</span>
+                </div>
+                <div class="feedback-text">Detected reasoning drift in multi-step tasks. Triggered retraining.</div>
+            </div>
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <span class="feedback-type improvement">Improvement</span>
+                    <span class="feedback-time">8s ago</span>
+                </div>
+                <div class="feedback-text">Synthetic data generation: +4.1% diversity in training set</div>
+            </div>
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <span class="feedback-type improvement">Improvement</span>
+                    <span class="feedback-time">12s ago</span>
+                </div>
+                <div class="feedback-text">Tool use accuracy: 89.2% → 92.7% via DPO tuning</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Over Time -->
+    <div class="demo-section">
+        <h2>📈 Performance Evolution (Last 24h)</h2>
+        <div class="graph">
+            <div class="graph-bar" style="height: 45%"></div>
+            <div class="graph-bar" style="height: 52%"></div>
+            <div class="graph-bar" style="height: 48%"></div>
+            <div class="graph-bar" style="height: 61%"></div>
+            <div class="graph-bar" style="height: 58%"></div>
+            <div class="graph-bar" style="height: 69%"></div>
+            <div class="graph-bar" style="height: 72%"></div>
+            <div class="graph-bar" style="height: 68%"></div>
+            <div class="graph-bar" style="height: 78%"></div>
+            <div class="graph-bar" style="height: 82%"></div>
+            <div class="graph-bar" style="height: 79%"></div>
+            <div class="graph-bar" style="height: 85%"></div>
+            <div class="graph-bar" style="height: 88%"></div>
+            <div class="graph-bar" style="height: 91%"></div>
+            <div class="graph-bar" style="height: 94%"></div>
+            <div class="graph-bar" style="height: 97%"></div>
+        </div>
+    </div>
+    
+    <!-- Metrics -->
+    <div class="metrics">
+        <div class="metric-card">
+            <div class="metric-title">Model Improvement Rate</div>
+            <div class="metric-value">+29%</div>
+            <div class="metric-change">over 18-hour self-training cycle</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Synthetic Data Generated</div>
+            <div class="metric-value">2.4M</div>
+            <div class="metric-change">new training examples</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Error Recovery Time</div>
+            <div class="metric-value">4.2s</div>
+            <div class="metric-change">auto-detection & fix</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-title">Cost Efficiency</div>
+            <div class="metric-value">$0.08</div>
+            <div class="metric-change">per 1K improvement cycles</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 24px;">
+        <h2>Core Implementation</h2>
+        <div class="code"><span class="comment"># Self-Evolving Agent Loop</span>
+<span class="keyword">class</span> <span class="func">SelfEvolvingAgent</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, base_model):
+        self.model = base_model
+        self.feedback_buffer = []
+        self.synth_data_gen = <span class="string">SyntheticDataGenerator</span>()
+    
+    <span class="keyword">def</span> <span class="func">evolve</span>(self):
+        <span class="comment"># 1. Collect feedback from deployment</span>
+        feedback = self.collect_feedback()
+        
+        <span class="comment"># 2. Identify error patterns</span>
+        patterns = self.analyze_errors(feedback)
+        
+        <span class="comment"># 3. Generate synthetic training data</span>
+        synth_data = self.synth_data_gen.generate(patterns)
+        
+        <span class="comment"># 4. Fine-tune with DPO</span>
+        self.model.finetune(synth_data, <span class="string">method=</span><span class="string">"dpo"</span>)
+        
+        <span class="comment"># 5. Deploy new version</span>
+        <span class="keyword">return</span> self.model.deploy()</div>
+    </div>
+</body>
+</html>
