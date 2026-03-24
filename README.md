@@ -1,48 +1,30 @@
-# Luke Lu - Portfolio
+# AI Feedback Analysis Tool
 
-Agentic AI Engineer | Princeton PhD | Amazon AGI
+Self-evolving AI agent system for automated feedback analysis.
 
-## About Me
+## About
 
-Princeton PhD and ML Engineer at Amazon AGI with 5+ years building production AI systems at Big Tech and startups. Expert in **Agentic LLM post-training**, **self-evolving agent systems**, and **scalable agent training frameworks**.
+An AI-powered system that analyzes customer feedback using agentic and self-evolving techniques. Built with modern web technologies.
 
-## Skills
+## Features
 
-- **Agentic/RL:** RLHF, PPO, DPO, Agentic Gym, Self-evolving agents, Multi-agent RL
-- **Frameworks:** verl, Slime, Megatron, Ray, vLLM, Transformers, PyTorch
-- **Infrastructure:** GPU clusters, Distributed training, ML infrastructure
+- **Agent Training Arena** - Interactive training environment for feedback analysis agents
+- **Orchestration Hub** - Multi-agent workflow visualization
+- **Self-Evolving Agent** - Real-time learning and optimization
 
-## Experience
+## Demo
 
-### Amazon AGI | Agentic AI Engineer
-- Architected RL post-training pipelines for 150B+ MoE and dense LLMs
-- Built Agentic Gym orchestrating 10K+ evaluation workflows
-- 3x throughput, $2M cost reduction
+View the live demos:
+- [Agent Training Arena](demos/demo-1-agent-training-arena.html)
+- [Agent Orchestration Hub](demos/demo-2-agent-orchestration-hub.html)
+- [Self-Evolving Agent](demos/demo-3-self-evolving-agent.html)
 
-### ByteDance | Research Engineer
-- Built synthetic data generation platform for self-improving agent training
-- 3 first-author + 2 co-authored patents
+## Tech
 
-### Unusly | Co-Founder & CTO
-- Self-evolving AI platform: $100K revenue
-- IEEE paper, CES showcase, SIGGRAPH feature
-
-### Google (acquired Eyefluence) | R&D Engineer
-- Personalized biometric AI for Pixel: 30% UX improvement, 20% cost reduction
-
-## Education
-
-**Ph.D., Electrical and Computer Engineering** - Princeton University
-- Taiwan National Study Abroad Scholarship
-- 5+ papers (500+ citations) | 2 patents | Emil Wolf Best Paper Award
-
-## Contact
-
-- Email: chienlu@alumni.princeton.edu
-- LinkedIn: [lukelu](https://linkedin.com/in/lukelu)
-- Location: San Francisco, CA
-- Target: $500K+ TC | Agentic AI / Self-evolving Agents / Agent Gyms
+- HTML/CSS/JavaScript
+- Self-evolving AI systems
+- Agentic workflows
 
 ---
 
-Built with HTML/CSS, hosted on GitHub Pages.
+Built with ❤️ and hosted on GitHub Pages.
