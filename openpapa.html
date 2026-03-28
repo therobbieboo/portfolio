@@ -40,28 +40,13 @@
             z-index: -1;
         }
         
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
+        .container { max-width: 500px; margin: 0 auto; }
         
-        header {
-            text-align: center;
-            padding: 1rem 0 1.5rem;
-        }
+        header { text-align: center; padding: 1rem 0 1.5rem; }
         
-        header h1 {
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+        header h1 { font-size: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         
-        header p {
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
+        header p { color: var(--text-secondary); margin-top: 0.5rem; }
         
         .voice-main {
             background: var(--bg-card);
@@ -74,355 +59,97 @@
             transition: all 0.3s;
         }
         
-        .voice-main:hover {
-            border-color: var(--accent-red);
-            transform: translateY(-2px);
-        }
+        .voice-main:hover { border-color: var(--accent-red); transform: translateY(-2px); }
         
-        .voice-main.listening {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
-        }
+        .voice-main.listening { border-color: var(--accent-green); box-shadow: 0 0 40px rgba(16, 185, 129, 0.3); }
         
-        .voice-main.speaking {
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 40px rgba(255, 107, 53, 0.3);
-            animation: pulse 2s infinite;
-        }
+        .voice-main.speaking { border-color: var(--accent-orange); box-shadow: 0 0 40px rgba(255, 107, 53, 0.3); animation: pulse 2s infinite; }
         
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.3); }
-            50% { box-shadow: 0 0 60px rgba(255, 107, 53, 0.5); }
-        }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.3); } 50% { box-shadow: 0 0 60px rgba(255, 107, 53, 0.5); } }
         
-        .papa-emoji {
-            font-size: 4.5rem;
-            display: block;
-            margin-bottom: 1rem;
-            transition: transform 0.3s;
-        }
+        .papa-emoji { font-size: 4.5rem; display: block; margin-bottom: 1rem; transition: transform 0.3s; }
         
-        .voice-main.listening .papa-emoji {
-            animation: bounce 0.6s infinite;
-        }
+        .voice-main.listening .papa-emoji { animation: bounce 0.6s infinite; }
+        .voice-main.speaking .papa-emoji { animation: speak 0.8s infinite; }
         
-        .voice-main.speaking .papa-emoji {
-            animation: speak 0.8s infinite;
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes speak { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        .voice-status { font-size: 1.3rem; font-weight: 700; color: var(--accent-red); margin-bottom: 0.5rem; }
+        .voice-main.listening .voice-status { color: var(--accent-green); }
+        .voice-hint { color: var(--text-secondary); font-size: 0.85rem; }
         
-        @keyframes speak {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        .recording-indicator { display: none; color: var(--accent-green); font-size: 0.8rem; margin-top: 5px; }
+        .voice-main.listening .recording-indicator { display: block; }
         
-        .voice-status {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--accent-red);
-            margin-bottom: 0.5rem;
-        }
+        .wave-container { display: none; justify-content: center; align-items: center; gap: 4px; height: 40px; margin-top: 1rem; }
+        .voice-main.listening .wave-container, .voice-main.speaking .wave-container { display: flex; }
         
-        .voice-main.listening .voice-status {
-            color: var(--accent-green);
-        }
-        
-        .voice-hint {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-        
-        .recording-indicator {
-            display: none;
-            color: var(--accent-green);
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-        
-        .voice-main.listening .recording-indicator {
-            display: block;
-        }
-        
-        .wave-container {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            height: 40px;
-            margin-top: 1rem;
-        }
-        
-        .voice-main.listening .wave-container,
-        .voice-main.speaking .wave-container {
-            display: flex;
-        }
-        
-        .wave-bar {
-            width: 4px;
-            background: var(--accent-green);
-            border-radius: 2px;
-            animation: wave 0.4s ease-in-out infinite;
-        }
-        
-        .voice-main.speaking .wave-bar {
-            background: var(--accent-orange);
-        }
-        
+        .wave-bar { width: 4px; background: var(--accent-green); border-radius: 2px; animation: wave 0.4s ease-in-out infinite; }
+        .voice-main.speaking .wave-bar { background: var(--accent-orange); }
         .wave-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
         .wave-bar:nth-child(2) { height: 30px; animation-delay: 0.1s; }
         .wave-bar:nth-child(3) { height: 40px; animation-delay: 0.2s; }
         .wave-bar:nth-child(4) { height: 30px; animation-delay: 0.3s; }
         .wave-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
         
-        @keyframes wave {
-            0%, 100% { transform: scaleY(0.5); }
-            50% { transform: scaleY(1); }
-        }
+        @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
         
-        /* Modern Audio Player */
-        .audio-player {
-            display: none;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-        }
+        .audio-player { display: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; }
+        .audio-player.active { display: block; animation: slideUp 0.3s ease; }
         
-        .audio-player.active {
-            display: block;
-            animation: slideUp 0.3s ease;
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .audio-player-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+        .audio-player-title { font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
+        .audio-player-title::before { content: '🔊'; }
+        .audio-player-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; padding: 0; line-height: 1; }
         
-        .audio-player-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.75rem;
-        }
+        .audio-progress { position: relative; height: 6px; background: var(--border-color); border-radius: 3px; margin-bottom: 0.75rem; cursor: pointer; overflow: hidden; }
+        .audio-progress-fill { height: 100%; background: var(--gradient-red); border-radius: 3px; width: 0%; transition: width 0.1s linear; }
         
-        .audio-player-title {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .audio-controls { display: flex; align-items: center; gap: 1rem; }
+        .audio-play-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-red); border: none; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .audio-play-btn:hover { transform: scale(1.1); }
+        .audio-time { font-size: 0.75rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+        .audio-info { flex: 1; }
+        .audio-text { font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .audio-player-title::before {
-            content: '🔊';
-        }
+        .chat-log { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; max-height: 350px; overflow-y: auto; padding-right: 5px; }
+        .chat-log::-webkit-scrollbar { width: 4px; }
+        .chat-log::-webkit-scrollbar-track { background: var(--bg-dark); }
+        .chat-log::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
         
-        .audio-player-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 0;
-            line-height: 1;
-        }
+        .voice-message { padding: 1rem 1.25rem; border-radius: 1.25rem; max-width: 90%; animation: slideUp 0.3s ease; }
+        .voice-message.user { background: var(--gradient-red); align-self: flex-end; border-bottom-right-radius: 0.25rem; }
+        .voice-message.ai { background: var(--bg-card); border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 0.25rem; }
+        .voice-message .text { font-size: 0.95rem; line-height: 1.5; }
+        .voice-message .time { font-size: 0.65rem; opacity: 0.6; margin-top: 0.5rem; }
         
-        .audio-progress {
-            position: relative;
-            height: 6px;
-            background: var(--border-color);
-            border-radius: 3px;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        
-        .audio-progress-fill {
-            height: 100%;
-            background: var(--gradient-red);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-        
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .audio-play-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-red);
-            border: none;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .audio-play-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .audio-time {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .audio-info {
-            flex: 1;
-        }
-        
-        .audio-text {
-            font-size: 0.85rem;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        /* Chat Log */
-        .chat-log {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            max-height: 350px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        
-        .chat-log::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .chat-log::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-        
-        .chat-log::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 2px;
-        }
-        
-        .voice-message {
-            padding: 1rem 1.25rem;
-            border-radius: 1.25rem;
-            max-width: 90%;
-            animation: slideUp 0.3s ease;
-        }
-        
-        .voice-message.user {
-            background: var(--gradient-red);
-            align-self: flex-end;
-            border-bottom-right-radius: 0.25rem;
-        }
-        
-        .voice-message.ai {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            align-self: flex-start;
-            border-bottom-left-radius: 0.25rem;
-        }
-        
-        .voice-message .text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        
-        .voice-message .time {
-            font-size: 0.65rem;
-            opacity: 0.6;
-            margin-top: 0.5rem;
-        }
-        
-        .voice-message .typing {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-orange);
-            border-radius: 50%;
-            animation: typingPulse 1.4s infinite;
-        }
-        
+        .voice-message .typing { display: flex; gap: 4px; align-items: center; }
+        .typing-dot { width: 8px; height: 8px; background: var(--accent-orange); border-radius: 50%; animation: typingPulse 1.4s infinite; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         
-        @keyframes typingPulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
+        @keyframes typingPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         
-        /* Quick Commands */
-        .quick-voice {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
+        .context-indicator { text-align: center; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; padding: 0.5rem; background: var(--bg-card); border-radius: 0.5rem; display: none; }
+        .context-indicator.active { display: block; }
         
-        .voice-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1rem;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .quick-voice { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .voice-btn { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 1rem; padding: 1rem; color: var(--text-primary); font-size: 0.9rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        .voice-btn:hover { border-color: var(--accent-red); background: var(--bg-card-hover); transform: translateY(-2px); }
         
-        .voice-btn:hover {
-            border-color: var(--accent-red);
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-        }
-        
-        /* Context indicator */
-        .context-indicator {
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            background: var(--bg-card);
-            border-radius: 0.5rem;
-            display: none;
-        }
-        
-        .context-indicator.active {
-            display: block;
-        }
+        .llm-indicator { display: inline-block; background: var(--accent-green); color: var(--bg-dark); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; margin-left: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1><span>👨‍🍳</span> OpenPapa</h1>
-            <p>您的語音美食助手</p>
+            <p>您的語音美食助手 <span class="llm-indicator">GPT-4</span></p>
         </header>
         
-        <!-- Main Voice Button -->
         <div class="voice-main" id="voiceMain">
             <span class="papa-emoji">👨‍🍳</span>
             <div class="voice-status" id="voiceStatus">👆 點擊說話</div>
@@ -437,12 +164,8 @@
             </div>
         </div>
         
-        <!-- Context Indicator -->
-        <div class="context-indicator" id="contextIndicator">
-            💬 對話中 - 可以繼續提問
-        </div>
+        <div class="context-indicator" id="contextIndicator">💬 對話中 - 可以繼續提問</div>
         
-        <!-- Audio Player -->
         <div class="audio-player" id="audioPlayer">
             <div class="audio-player-header">
                 <div class="audio-player-title">OpenPapa 回覆</div>
@@ -462,10 +185,8 @@
             </div>
         </div>
         
-        <!-- Chat Log -->
         <div class="chat-log" id="chatLog"></div>
         
-        <!-- Quick Commands -->
         <div class="quick-voice">
             <button class="voice-btn" onclick="quickCommand('我想吃辣的食物')">🌶️ 辣的</button>
             <button class="voice-btn" onclick="quickCommand('我想吃義大利料理')">🍝 義大利</button>
@@ -475,18 +196,36 @@
     </div>
     
     <script>
+        // OpenAI API Configuration - get from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        let OPENAI_API_KEY = urlParams.get('key');
         const TTS_URL = 'https://portfolio-tts-test-production.up.railway.app/tts';
+        
+        // Fallback if no API key provided
+        if (!OPENAI_API_KEY) {
+            console.log('No API key provided - using fallback mode');
+        }
         
         let isSpeaking = false;
         let isListening = false;
         let isPlaying = false;
         let audioBlob = null;
         let recognition = null;
-        let conversationContext = [];
+        let conversationHistory = [];
         let audioElement = null;
-        let currentAudioUrl = null;
         
-        // Initialize Speech Recognition
+        // System prompt for OpenPapa
+        const SYSTEM_PROMPT = `你是 OpenPapa，一個親切既粵語美食助手。你既目標係：
+1. 用廣東話/粵語回答（夾雜少量國語都可以）
+2. 幫用戶搵餐廳、推薦美食
+3. 對話要自然、流暢
+4. 記住之前既對話內容，可以做 follow-up
+5. 每次回答要簡短，唔好太長（最多100字）
+6. 如果用戶問既嘢唔係關於食物，可以輕鬆咁樣引導返去
+
+開始對話吧！`;
+        
+        // Speech Recognition
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (SpeechRecognition) {
@@ -501,28 +240,16 @@
                 processCommand(transcript);
             };
             
-            recognition.onend = () => {
-                if (isListening) {
-                    stopListening();
-                }
-            };
+            recognition.onend = () => { if (isListening) stopListening(); };
         }
         
         function handleVoiceClick() {
             if (isSpeaking) return;
-            
-            if (!isListening) {
-                startListening();
-            } else {
-                stopListening();
-            }
+            if (!isListening) startListening(); else stopListening();
         }
         
         function startListening() {
-            if (!recognition) {
-                addMessage('抱歉，您的瀏覽器不支持語音辨識', 'ai');
-                return;
-            }
+            if (!recognition) { addMessage('抱歉，您的瀏覽器不支持語音辨識', 'ai'); return; }
             
             isListening = true;
             const main = document.getElementById('voiceMain');
@@ -534,28 +261,17 @@
             status.textContent = "🎤 正在聽...";
             hint.textContent = "請說話";
             
-            try {
-                recognition.start();
-            } catch (e) {
-                stopListening();
-            }
+            try { recognition.start(); } catch (e) { stopListening(); }
         }
         
         function stopListening() {
             isListening = false;
             const main = document.getElementById('voiceMain');
-            const status = document.getElementById('voiceStatus');
-            const hint = document.getElementById('voiceHint');
-            
             main.classList.remove('listening');
-            
-            if (recognition) {
-                try { recognition.stop(); } catch (e) {}
-            }
-            
+            if (recognition) try { recognition.stop(); } catch (e) {}
             if (!isSpeaking) {
-                status.textContent = "👆 點擊說話";
-                hint.textContent = "告訴我您想吃什麼";
+                document.getElementById('voiceStatus').textContent = "👆 點擊說話";
+                document.getElementById('voiceHint').textContent = "告訴我您想吃什麼";
             }
         }
         
@@ -573,18 +289,9 @@
             const icon = sender === 'user' ? '🎤' : '👨‍🍳';
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
-            msg.innerHTML = `
-                <span class="text">${icon} ${text}</span>
-                <div class="time">${time}</div>
-            `;
-            
+            msg.innerHTML = `<span class="text">${icon} ${text}</span><div class="time">${time}</div>`;
             chatLog.appendChild(msg);
             chatLog.scrollTop = chatLog.scrollHeight;
-            
-            // Update context
-            if (sender === 'user') {
-                conversationContext.push({ role: 'user', text: text });
-            }
         }
         
         function showTyping() {
@@ -592,15 +299,7 @@
             const msg = document.createElement('div');
             msg.className = 'voice-message ai';
             msg.id = 'typingMessage';
-            msg.innerHTML = `
-                <span class="text">
-                    <span class="typing">
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
-                    </span>
-                </span>
-            `;
+            msg.innerHTML = `<span class="text"><span class="typing"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span></span>`;
             chatLog.appendChild(msg);
             chatLog.scrollTop = chatLog.scrollHeight;
         }
@@ -608,126 +307,6 @@
         function removeTyping() {
             const typingMsg = document.getElementById('typingMessage');
             if (typingMsg) typingMsg.remove();
-        }
-        
-        function updateContextIndicator(show) {
-            const indicator = document.getElementById('contextIndicator');
-            if (show && conversationContext.length > 1) {
-                indicator.classList.add('active');
-            } else {
-                indicator.classList.remove('active');
-            }
-        }
-        
-        function generateAIResponse(userText) {
-            const lower = userText.toLowerCase();
-            
-            // Get conversation history for context
-            const history = conversationContext;
-            
-            // Only look at context if there are recent exchanges
-            let lastTopic = null;
-            if (history.length > 0 && history.length <= 4) {
-                // Find last mentioned topic from recent messages (last 2)
-                for (let i = history.length - 1; i >= Math.max(0, history.length - 2); i--) {
-                    const msg = history[i];
-                    if (msg.text.includes('辣') || msg.text.includes('火鍋')) { lastTopic = 'spicy'; break; }
-                    if (msg.text.includes('義大利') || msg.text.includes('意大利') || msg.text.includes('意大利')) { lastTopic = 'italian'; break; }
-                    if (msg.text.includes('咖啡') || msg.text.includes('coffee')) { lastTopic = 'coffee'; break; }
-                    if (msg.text.includes('日本') || msg.text.includes('壽司') || msg.text.includes('sushi')) { lastTopic = 'japanese'; break; }
-                    if (msg.text.includes('早餐') || msg.text.includes('早午餐') || msg.text.includes('brunch')) { lastTopic = 'brunch'; break; }
-                    if (msg.text.includes('米其林') || msg.text.includes('高級')) { lastTopic = 'michelin'; break; }
-                }
-            }
-            
-            // Only use context for clear follow-up questions
-            const followUpWords = ['仲有', '其他', '仲想', '仲要', '仲有咩', '仲想問', '再問', '仲想知', '仲有冇', '仲有沒有', '仲有冇'];
-            const isFollowUp = followUpWords.some(w => lower.includes(w)) && lastTopic;
-            
-            // If follow-up with context, use context response
-            if (isFollowUp && lastTopic) {
-                if (lastTopic === 'spicy') return "除咗麻辣火鍋，仲有泰式酸辣湯、四川涼皮、水煮魚都好正！🌶️";
-                if (lastTopic === 'italian') return "意粉之外，披薩、燉飯、千層面都好正！🍝";
-                if (lastTopic === 'coffee') return "手沖之外，仲有抹茶拿鐵、燕麥奶拿鐵！☕";
-                if (lastTopic === 'japanese') return "壽司之外，仲有拉麵、串燒、天婦羅！🍣";
-                if (lastTopic === 'brunch') return "除咗班尼迪蛋，仲有法式吐司、松餅！🥐";
-                if (lastTopic === 'michelin') return "米其林之外，仲有黑珍珠、必比登推介！⭐";
-            }
-            
-            // Clarifying questions - only if recent topic exists
-            if (lastTopic && (lower.includes('邊間') || lower.includes('邊一家') || lower.includes('邊個') || lower.includes('推薦'))) {
-                if (lastTopic === 'spicy') return "最hit既係「辣妹子火鍋」，评分4.8！📍";
-                if (lastTopic === 'italian') return "我最推介「小意大利」！📍";
-                if (lastTopic === 'coffee') return "就係呢間「Coffee Lab」！📍";
-                if (lastTopic === 'japanese') return "「壽司山大雄」最新鮮！📍";
-            }
-            
-            // Confirmation - only if recent topic
-            if (lastTopic && (lower.includes('好') || lower.includes('可以') || lower.includes('要') || lower.includes('去') || lower.includes('試'))) {
-                return "好！我幫你book定位？定係想睇menu先？📋";
-            }
-            
-            // Handle location / address questions - NO context needed
-            if (lower.includes('邊') || lower.includes('度') || lower.includes('到') || lower.includes('住') || lower.includes('location') || lower.includes('address') || lower.includes('地址') || lower.includes('地址') || lower.includes('咩區') || lower.includes('邊區')) {
-                return "抱歉，我唔知道您既位置。不如您話比我知您想搵咩區既餐廳？";
-            }
-            
-            // Handle "邊間" (which one) - needs context but can also ask
-            if (lower.includes('邊間') || lower.includes('邊一家') || lower.includes('推薦邊') || lower.includes('咩餐廳')) {
-                if (lastTopic) {
-                    if (lastTopic === 'spicy') return "最hit既係「辣妹子火鍋」！📍";
-                    if (lastTopic === 'italian') return "推介「小意大利」！📍";
-                    if (lastTopic === 'coffee') return "「Coffee Lab」！📍";
-                    if (lastTopic === 'japanese') return "「壽司山大雄」！📍";
-                }
-                return "您想搵咩類型既餐廳先？";
-            }
-            
-            // Handle thanks
-            if (lower.includes('多謝') || lower.includes('謝謝') || lower.includes('thx') || lower.includes('thanks') || lower.includes('感恩')) {
-                return "唔洗客氣！仲想搵其他餐廳嗎？";
-            }
-            
-            // Handle yes/ok confirmation - only if context
-            if ((lower.includes('好') || lower.includes('ok') || lower.includes('好呀') || lower.includes('收') || lower.includes('係') || lower.includes('yes') || lower.includes('yeah')) && lastTopic) {
-                return "好！我幫您book位？定係想睇其他選擇？";
-            }
-            
-            // Handle "仲有" / follow-up questions with topic
-            const followUpWords = ['仲有', '其他', '仲想', '仲要', '仲有咩', '仲想問', '再問', '仲想知'];
-            const isFollowUp = followUpWords.some(w => lower.includes(w));
-            
-            if (isFollowUp && lastTopic) {
-                if (lastTopic === 'spicy') return "除麻辣火鍋，仲有泰式酸辣湯、四川涼皮！🌶️";
-                if (lastTopic === 'italian') return "意粉之外，披薩、燉飯好正！🍝";
-                if (lastTopic === 'coffee') return "手沖之外，仲有抹茶拿鐵！☕";
-                if (lastTopic === 'japanese') return "壽司之外，仲有拉麵、串燒！🍣";
-            }
-            
-            // MAIN TOPICS - these start new topics, no context needed
-            if (lower.includes('辣') || lower.includes('spicy') || lower.includes('麻辣')) {
-                return "好！附近有一家超正既麻辣火鍋，辣得過癮！而且評價好高🇨🇳";
-            } else if (lower.includes('義大利') || lower.includes('意大利') || lower.includes('italian')) {
-                return "意大利菜？呢度有一家手工意粉既餐廳超讚慨🇮🇹";
-            } else if (lower.includes('驚喜') || lower.includes('surprise') || lower.includes('random')) {
-                return "好！今日既hidden gem係呢間「深夜食堂」🇯🇵";
-            } else if (lower.includes('咖啡') || lower.includes('coffee') || lower.includes('提神')) {
-                return "OK！呢度有幾家人氣咖啡店☕";
-            } else if (lower.includes('日本') || lower.includes('壽司') || lower.includes('sushi')) {
-                return "日本料理？呢間壽司店既食材超新鮮🇯🇵";
-            } else if (lower.includes('早餐') || lower.includes('早午餐') || lower.includes('brunch')) {
-                return "早午餐？呢間既班尼迪克蛋超級正🥐";
-            } else if (lower.includes('貴') || lower.includes('高級') || lower.includes('michelin')) {
-                return "米其林？呢度有3間星級餐廳好啱慶祝🥇";
-            } else if (lower.includes('便') || lower.includes('平') || lower.includes('budget') || lower.includes('$$')) {
-                return "平靚正？呢間既叉燒飯CP值超高🇭🇰";
-            } else if (lower.includes('近') || lower.includes(' nearby') || lower.includes('附近')) {
-                return "離你呢度最近既係呢間，行路5分鐘就到📍";
-            } else if (lower.includes('想') || lower.includes('要') || lower.includes('搵') || lower.includes('搵')) {
-                return "明白！等我幫你搵下🇨🇳";
-            } else {
-                return "好問題！我地有中式、日式、意大利菜、印度咖喱🍜";
-            }
         }
         
         async function processCommand(text) {
@@ -740,27 +319,56 @@
             main.classList.add('speaking');
             isSpeaking = true;
             
-            status.textContent = "🧠 AI 思考中...";
+            status.textContent = "🧠 GPT-4 思考中...";
             hint.textContent = "等佢砌一砌";
             
             showTyping();
             
             try {
-                // Simulate thinking time for better UX
-                await new Promise(r => setTimeout(r, 1000));
+                // Build messages for GPT-4
+                const messages = [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    ...conversationHistory.map(h => ({ role: h.role, content: h.text })),
+                    { role: 'user', content: text }
+                ];
                 
-                const aiResponse = generateAIResponse(text);
+                // Call OpenAI API
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: messages,
+                        max_tokens: 200
+                    })
+                });
+                
+                if (!response.ok) throw new Error('OpenAI API error: ' + response.status);
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
                 removeTyping();
                 addMessage(aiResponse, 'ai');
                 
-                // Update context
-                conversationContext.push({ role: 'assistant', text: aiResponse });
-                updateContextIndicator(true);
+                // Update conversation history
+                conversationHistory.push({ role: 'user', content: text });
+                conversationHistory.push({ role: 'assistant', content: aiResponse });
                 
-                // Show audio player
-                status.textContent = "🔊 緊係緊係...";
+                // Keep history short (last 10 messages)
+                if (conversationHistory.length > 10) {
+                    conversationHistory = conversationHistory.slice(-10);
+                }
                 
-                const response = await fetch(TTS_URL, {
+                document.getElementById('contextIndicator').classList.add('active');
+                
+                // Generate TTS
+                status.textContent = "🔊 生成語音中...";
+                
+                const ttsResponse = await fetch(TTS_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -772,15 +380,11 @@
                     })
                 });
                 
-                if (!response.ok) {
-                    throw new Error('TTS failed');
-                }
+                if (!ttsResponse.ok) throw new Error('TTS failed');
                 
-                audioBlob = await response.blob();
+                audioBlob = await ttsResponse.blob();
                 const url = URL.createObjectURL(audioBlob);
-                currentAudioUrl = url;
                 
-                // Show audio player
                 showAudioPlayer(url, aiResponse);
                 
             } catch (err) {
@@ -795,36 +399,22 @@
         
         function showAudioPlayer(url, text) {
             const player = document.getElementById('audioPlayer');
-            const playerText = document.getElementById('audioText');
-            const main = document.getElementById('voiceMain');
-            const status = document.getElementById('voiceStatus');
-            const hint = document.getElementById('voiceHint');
-            
-            playerText.textContent = text;
+            document.getElementById('audioText').textContent = text;
             player.classList.add('active');
             
-            // Create audio element
-            if (audioElement) {
-                audioElement.pause();
-                audioElement = null;
-            }
+            if (audioElement) { audioElement.pause(); audioElement = null; }
             
             audioElement = new Audio(url);
-            audioElement.onplay = () => {
-                isPlaying = true;
-                document.getElementById('audioPlayBtn').textContent = '⏸';
-            };
-            
+            audioElement.onplay = () => { isPlaying = true; document.getElementById('audioPlayBtn').textContent = '⏸'; };
             audioElement.onended = () => {
                 isPlaying = false;
                 document.getElementById('audioPlayBtn').textContent = '▶';
                 document.getElementById('audioProgressFill').style.width = '100%';
                 isSpeaking = false;
-                main.classList.remove('speaking');
-                status.textContent = "👆 點擊說話";
-                hint.textContent = "可以繼續傾偈 🇭🇰";
+                document.getElementById('voiceMain').classList.remove('speaking');
+                document.getElementById('voiceStatus').textContent = "👆 點擊說話";
+                document.getElementById('voiceHint').textContent = "可以繼續傾偈 🇭🇰";
             };
-            
             audioElement.ontimeupdate = () => {
                 const percent = (audioElement.currentTime / audioElement.duration) * 100;
                 document.getElementById('audioProgressFill').style.width = percent + '%';
@@ -843,36 +433,22 @@
         
         function togglePlay() {
             if (!audioElement) return;
-            
-            if (isPlaying) {
-                audioElement.pause();
-                document.getElementById('audioPlayBtn').textContent = '▶';
-            } else {
-                audioElement.play();
-                document.getElementById('audioPlayBtn').textContent = '⏸';
-            }
+            if (isPlaying) { audioElement.pause(); document.getElementById('audioPlayBtn').textContent = '▶'; }
+            else { audioElement.play(); document.getElementById('audioPlayBtn').textContent = '⏸'; }
             isPlaying = !isPlaying;
         }
         
         function seekAudio(event) {
             if (!audioElement) return;
-            
-            const progressBar = event.currentTarget;
-            const percent = event.offsetX / progressBar.offsetWidth;
+            const percent = event.offsetX / event.currentTarget.offsetWidth;
             audioElement.currentTime = percent * audioElement.duration;
         }
         
         function closeAudioPlayer() {
-            const player = document.getElementById('audioPlayer');
-            player.classList.remove('active');
-            
-            if (audioElement) {
-                audioElement.pause();
-            }
-            
-            const main = document.getElementById('voiceMain');
+            document.getElementById('audioPlayer').classList.remove('active');
+            if (audioElement) audioElement.pause();
             if (!isSpeaking) {
-                main.classList.remove('speaking');
+                document.getElementById('voiceMain').classList.remove('speaking');
                 document.getElementById('voiceStatus').textContent = "👆 點擊說話";
                 document.getElementById('voiceHint').textContent = "可以繼續傾偈 🇭🇰";
             }
@@ -889,7 +465,7 @@
             
             // Welcome message
             setTimeout(() => {
-                addMessage('你好！我是 OpenPapa！👨‍🍳 話比我知你想食咩？', 'ai');
+                addMessage('你好！我是 OpenPapa 👨‍🍳 即刻用 GPT-4 幫你對話！話比我知你想食咩？', 'ai');
             }, 500);
         });
     </script>
