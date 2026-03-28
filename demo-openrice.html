@@ -739,6 +739,8 @@
             const status = document.getElementById('voiceStatus');
             status.textContent = "🔊 Minimax 語音生成中...";
             
+            console.log('Using Minimax TTS with key:', MINIMAX_API_KEY ? 'set' : 'not set', 'group:', MINIMAX_GROUP_ID ? 'set' : 'not set');
+            
             fetch('https://api.minimaxi.chat/v1/t2a_v2?GroupId=' + MINIMAX_GROUP_ID, {
                 method: 'POST',
                 headers: {
@@ -747,20 +749,21 @@
                 },
                 body: JSON.stringify({
                     text: text,
-                    model: "speech-02-turbo",
+                    model: "speech-02-hd",  // Use HD model for better quality
                     voice_setting: {
                         voice_id: "Chinese (Mandarin)_Radio_Host",
                         speed: 1,
                         emotion: "neutral"
                     },
                     audio_setting: {
-                        format: "mp3",
-                        sample_rate: 32000
+                        format: "wav",
+                        sample_rate: 16000
                     }
                 })
             })
             .then(res => res.json())
             .then(data => {
+                console.log('Minimax response:', data);
                 if (data.data && data.data.audio) {
                     // Convert base64 to audio
                     const audioBase64 = data.data.audio;
@@ -770,7 +773,7 @@
                     for (let i = 0; i < audioBytes.length; i++) {
                         uint8Array[i] = audioBytes.charCodeAt(i);
                     }
-                    const blob = new Blob([uint8Array], { type: 'audio/mp3' });
+                    const blob = new Blob([uint8Array], { type: 'audio/wav' });
                     const audioUrl = URL.createObjectURL(blob);
                     
                     const audio = new Audio(audioUrl);
@@ -782,14 +785,16 @@
                         isProcessing = false;
                         main.classList.remove('speaking');
                         status.textContent = "點擊說話";
-                        hint.textContent = "告訴我你想吃什麼";
                         showRestaurants();
                     };
-                    audio.onerror = () => {
-                        // Fallback to browser TTS
+                    audio.onerror = (e) => {
+                        console.error('Audio play error:', e);
                         speakWithBrowserTTS(text);
                     };
                     audio.play();
+                } else if (data.base_resp) {
+                    console.error('Minimax error:', data.base_resp);
+                    speakWithBrowserTTS(text);
                 } else {
                     speakWithBrowserTTS(text);
                 }
