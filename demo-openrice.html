@@ -588,6 +588,9 @@
             chatLog.scrollTop = chatLog.scrollHeight;
         }
         
+        // TODO: Add your OpenAI API key here
+        let OPENAI_API_KEY = null;
+        
         function processVoiceCommand(text) {
             isProcessing = true;
             const main = document.getElementById('voiceMain');
@@ -596,12 +599,46 @@
             
             main.classList.remove('listening');
             main.classList.add('speaking');
-            status.textContent = "Speaking...";
             
-            // Simulate AI thinking - fast!
-            // Target: under 7 seconds
-            const response = generateResponse(text);
-            speakResponse(response);
+            // Check if API key is configured
+            if (!OPENAI_API_KEY) {
+                status.textContent = "需設定 API Key";
+                hint.textContent = "請問要提供 API Key 嗎？";
+                addVoiceMessage('⚠️ 需要 API Key 才能使用 AI 功能，請提供 key', 'ai');
+                isProcessing = false;
+                main.classList.remove('speaking');
+                return;
+            }
+            
+            status.textContent = "AI 思考中...";
+            hint.textContent = "等一下";
+            
+            // Call OpenAI API
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + OPENAI_API_KEY
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: '你是 OpenRice，一個友善的餐廳推薦助手。用簡短的中文回答（50字以內）。' },
+                        { role: 'user', content: text }
+                    ],
+                    max_tokens: 100
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const aiResponse = data.choices?.[0]?.message?.content || "抱歉，我沒有收到回應";
+                speakResponse(aiResponse);
+            })
+            .catch(error => {
+                console.error('API error:', error);
+                const fallback = generateResponse(text);
+                speakResponse(fallback);
+            });
         }
         
         function generateResponse(text) {
