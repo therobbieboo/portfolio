@@ -589,11 +589,10 @@
             main.classList.add('speaking');
             status.textContent = "Speaking...";
             
-            // Simulate AI thinking - faster!
-            setTimeout(() => {
-                const response = generateResponse(text);
-                speakResponse(response);
-            }, 200);
+            // Simulate AI thinking - fast!
+            // Target: under 7 seconds
+            const response = generateResponse(text);
+            speakResponse(response);
         }
         
         function generateResponse(text) {
@@ -707,6 +706,46 @@
             speechSynthesis.onvoiceschanged = () => {
                 console.log('Voices loaded:', speechSynthesis.getVoices().length);
             };
+        }
+        
+        // Auto-test voice on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testVoiceOutput();
+            }, 1000);
+        });
+        
+        function testVoiceOutput() {
+            if (!('speechSynthesis' in window)) {
+                addVoiceMessage('⚠️ 瀏覽器不支持語音輸出', 'ai');
+                return;
+            }
+            
+            const testText = "測試語音功能";
+            const testUtterance = new SpeechSynthesisUtterance(testText);
+            testUtterance.rate = 1;
+            testUtterance.volume = 0.5;
+            
+            // Find Chinese voice
+            const voices = speechSynthesis.getVoices();
+            const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+            if (zhVoice) {
+                testUtterance.voice = zhVoice;
+            }
+            
+            testUtterance.onstart = () => {
+                addVoiceMessage('🔊 語音測試中... 請聽是否有聲音', 'ai');
+            };
+            
+            testUtterance.onend = () => {
+                addVoiceMessage('✅ 語音測試完成！請告訴我有沒有聽到聲音', 'ai');
+            };
+            
+            testUtterance.onerror = (e) => {
+                addVoiceMessage('❌ 語音測試失敗: ' + e.error, 'ai');
+            };
+            
+            speechSynthesis.speak(testUtterance);
         }
     </script>
 </body>
