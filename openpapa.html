@@ -10,6 +10,7 @@
             --bg-card: #12121a;
             --accent-red: #ff4444;
             --accent-orange: #ff6b35;
+            --accent-green: #10b981;
             --text-primary: #ffffff;
             --text-secondary: #9ca3af;
             --border-color: #2a2a3a;
@@ -75,8 +76,8 @@
         }
         
         .voice-main.listening {
-            border-color: var(--accent-red);
-            box-shadow: 0 0 40px rgba(255, 68, 68, 0.3);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
         }
         
         .voice-main.speaking {
@@ -115,6 +116,10 @@
             margin-bottom: 0.5rem;
         }
         
+        .voice-main.listening .voice-status {
+            color: var(--accent-green);
+        }
+        
         .voice-hint {
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -136,9 +141,9 @@
         
         .wave-bar {
             width: 4px;
-            background: var(--accent-red);
+            background: var(--accent-green);
             border-radius: 2px;
-            animation: wave 0.5s ease-in-out infinite;
+            animation: wave 0.4s ease-in-out infinite;
         }
         
         .voice-main.speaking .wave-bar {
@@ -236,20 +241,32 @@
             margin-top: 20px;
             display: none;
         }
+        
+        .recording-indicator {
+            display: none;
+            color: var(--accent-green);
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        .voice-main.listening .recording-indicator {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><span>👴</span> OpenPapa</h1>
+            <h1><span>🐼</span> OpenPapa</h1>
             <p>您的語音美食助手</p>
         </header>
         
         <!-- Main Voice Button -->
-        <div class="voice-main" id="voiceMain" onclick="handleVoiceClick()">
-            <span class="papa-emoji">👴</span>
-            <div class="voice-status" id="voiceStatus">點擊說話</div>
+        <div class="voice-main" id="voiceMain">
+            <span class="papa-emoji">🐼</span>
+            <div class="voice-status" id="voiceStatus">👆 點擊說話</div>
             <div class="voice-hint" id="voiceHint">告訴我您想吃什麼</div>
+            <div class="recording-indicator" id="recordingIndicator">🎤 正在錄音...</div>
             <div class="wave-container">
                 <div class="wave-bar"></div>
                 <div class="wave-bar"></div>
@@ -281,19 +298,103 @@
         const TTS_URL = 'https://portfolio-tts-test-production.up.railway.app/tts';
         
         let isSpeaking = false;
+        let isListening = false;
         let audioBlob = null;
+        let recognition = null;
         
         function log(msg) {
             document.getElementById('log').textContent += msg + '\n';
         }
         
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'zh-TW';
+            
+            recognition.onstart = () => {
+                log('語音辨識開始');
+            };
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                log('聽到: ' + transcript);
+                addMessage(transcript, 'user');
+                processCommand(transcript);
+            };
+            
+            recognition.onerror = (event) => {
+                log('語音辨識錯誤: ' + event.error);
+                stopListening();
+            };
+            
+            recognition.onend = () => {
+                log('語音辨識結束');
+                if (isListening) {
+                    stopListening();
+                }
+            };
+        }
+        
         function handleVoiceClick() {
             if (isSpeaking) return;
-            speakDemo();
+            
+            if (!isListening) {
+                startListening();
+            } else {
+                stopListening();
+            }
+        }
+        
+        function startListening() {
+            if (!recognition) {
+                addMessage('抱歉，您的瀏覽器不支持語音辨識', 'ai');
+                return;
+            }
+            
+            isListening = true;
+            const main = document.getElementById('voiceMain');
+            const status = document.getElementById('voiceStatus');
+            const hint = document.getElementById('voiceHint');
+            
+            main.classList.add('listening');
+            main.classList.remove('speaking');
+            status.textContent = "🎤 正在聽...";
+            hint.textContent = "請說話";
+            
+            try {
+                recognition.start();
+            } catch (e) {
+                log('啟動失敗: ' + e.message);
+                stopListening();
+            }
+        }
+        
+        function stopListening() {
+            isListening = false;
+            const main = document.getElementById('voiceMain');
+            const status = document.getElementById('voiceStatus');
+            const hint = document.getElementById('voiceHint');
+            
+            main.classList.remove('listening');
+            
+            if (recognition) {
+                try {
+                    recognition.stop();
+                } catch (e) {}
+            }
+            
+            if (!isSpeaking) {
+                status.textContent = "👆 點擊說話";
+                hint.textContent = "告訴我您想吃什麼";
+            }
         }
         
         function quickCommand(text) {
-            if (isSpeaking) return;
+            if (isSpeaking || isListening) return;
             addMessage(text, 'user');
             processCommand(text);
         }
@@ -303,7 +404,7 @@
             const msg = document.createElement('div');
             msg.className = `voice-message ${sender}`;
             
-            const icon = sender === 'user' ? '🎤' : '👴';
+            const icon = sender === 'user' ? '🎤' : '🐼';
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             msg.innerHTML = `
@@ -315,24 +416,52 @@
             chatLog.scrollTop = chatLog.scrollHeight;
         }
         
+        function generateAIResponse(userText) {
+            // Simple response logic - can be replaced with real LLM
+            const lower = userText.toLowerCase();
+            
+            if (lower.includes('辣') || lower.includes('spicy')) {
+                return "好的！附近有一家超棒的麻辣火鍋，讓我推薦給您！";
+            } else if (lower.includes('義大利') || lower.includes('italian')) {
+                return "義大利料理嗎？這裡有一家很棒的義大利餐廳！";
+            } else if (lower.includes('驚喜') || lower.includes('surprise')) {
+                return "讓我給您一個驚喜！根據最新評價，這家餐廳最火！";
+            } else if (lower.includes('咖啡') || lower.includes('coffee')) {
+                return "需要提神嗎？這裡有幾家超人氣咖啡店！";
+            } else {
+                return "好的！讓我幫您找找附近好吃的餐廳！";
+            }
+        }
+        
         async function processCommand(text) {
             const main = document.getElementById('voiceMain');
             const status = document.getElementById('voiceStatus');
             const hint = document.getElementById('voiceHint');
             
+            isListening = false;
+            main.classList.remove('listening');
             main.classList.add('speaking');
-            status.textContent = "🔊 生成語音中...";
+            isSpeaking = true;
+            
+            status.textContent = "🧠 AI 思考中...";
             hint.textContent = "請稍候";
             
             try {
+                // Generate AI response
+                const aiResponse = generateAIResponse(text);
+                log('AI 回覆: ' + aiResponse);
+                
+                // Add AI message to chat
+                addMessage(aiResponse, 'ai');
+                
+                // Generate TTS
                 log('=== 生成 TTS ===');
-                log('文字: ' + text);
                 
                 const response = await fetch(TTS_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        text: text,
+                        text: aiResponse,
                         model: 'speech-2.8-hd',
                         voice: 'Chinese (Mandarin)_Cute_Spirit',
                         speed: 1,
@@ -354,10 +483,12 @@
                 player.style.display = 'block';
                 player.play();
                 
+                status.textContent = "🔊 播放中...";
+                
                 player.onended = () => {
                     isSpeaking = false;
                     main.classList.remove('speaking');
-                    status.textContent = "點擊說話";
+                    status.textContent = "👆 點擊說話";
                     hint.textContent = "告訴我您想吃什麼";
                 };
                 
@@ -370,16 +501,16 @@
             }
         }
         
-        async function speakDemo() {
-            const demoText = "你好！我是 OpenPapa！告訴我您想吃什麼，我會幫您找餐廳！";
-            addMessage(demoText, 'ai');
-            await processCommand(demoText);
-        }
-        
         // Test on load
         window.addEventListener('load', () => {
-            document.getElementById('voiceStatus').textContent = "👆 點擊測試";
-            document.getElementById('voiceHint').textContent = "測試 MiniMax 語音";
+            if (!SpeechRecognition) {
+                document.getElementById('voiceStatus').textContent = "⚠️ 不支援語音";
+                document.getElementById('voiceHint').textContent = "用下方按鈕測試";
+            } else {
+                document.getElementById('voiceStatus').textContent = "👆 點擊說話";
+                document.getElementById('voiceHint').textContent = "告訴我您想吃什麼";
+                document.getElementById('voiceMain').onclick = handleVoiceClick;
+            }
         });
     </script>
 </body>
