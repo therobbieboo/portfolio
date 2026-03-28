@@ -679,17 +679,26 @@
             }
         }
         
+        // Minimax TTS Configuration
+        let MINIMAX_API_KEY = null;
+        let MINIMAX_GROUP_ID = null;
+        
         function speakResponse(text) {
             // Add AI response to chat
             addVoiceMessage(text, 'ai');
             
-            // Speak the response
+            // Try Minimax TTS first
+            if (MINIMAX_API_KEY && MINIMAX_GROUP_ID) {
+                speakWithMinimax(text);
+                return;
+            }
+            
+            // Fallback to browser speech synthesis
             if ('speechSynthesis' in window) {
                 utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 1.1; // Faster
+                utterance.rate = 1.1;
                 utterance.pitch = 1;
                 
-                // Try to find a Chinese voice first
                 const voices = speechSynthesis.getVoices();
                 const chineseVoice = voices.find(v => v.lang.startsWith('zh')) 
                     || voices.find(v => v.lang.startsWith('cmn'));
@@ -698,7 +707,6 @@
                     utterance.voice = chineseVoice;
                     utterance.lang = chineseVoice.lang;
                 } else {
-                    // Fallback: try any available voice
                     utterance.lang = 'zh-TW';
                 }
                 
@@ -711,20 +719,107 @@
                     main.classList.remove('speaking');
                     status.textContent = "點擊說話";
                     hint.textContent = "告訴我你想吃什麼";
-                    
-                    // Show restaurants after speaking
                     showRestaurants();
                 };
                 
                 utterance.onerror = () => {
-                    // Continue even if speech fails
                     isProcessing = false;
                     showRestaurants();
                 };
                 
                 speechSynthesis.speak(utterance);
             } else {
-                // No speech synthesis, just show restaurants
+                isProcessing = false;
+                showRestaurants();
+            }
+        }
+        
+        function speakWithMinimax(text) {
+            const main = document.getElementById('voiceMain');
+            const status = document.getElementById('voiceStatus');
+            status.textContent = "🔊 Minimax 語音生成中...";
+            
+            fetch('https://api.minimaxi.chat/v1/t2a_v2?GroupId=' + MINIMAX_GROUP_ID, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + MINIMAX_API_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    model: "speech-02-turbo",
+                    voice_setting: {
+                        voice_id: "Chinese (Mandarin)_Radio_Host",
+                        speed: 1,
+                        emotion: "neutral"
+                    },
+                    audio_setting: {
+                        format: "mp3",
+                        sample_rate: 32000
+                    }
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.data && data.data.audio) {
+                    // Convert base64 to audio
+                    const audioBase64 = data.data.audio;
+                    const audioBytes = atob(audioBase64);
+                    const arrayBuffer = new ArrayBuffer(audioBytes.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    for (let i = 0; i < audioBytes.length; i++) {
+                        uint8Array[i] = audioBytes.charCodeAt(i);
+                    }
+                    const blob = new Blob([uint8Array], { type: 'audio/mp3' });
+                    const audioUrl = URL.createObjectURL(blob);
+                    
+                    const audio = new Audio(audioUrl);
+                    audio.onplay = () => {
+                        main.classList.add('speaking');
+                        status.textContent = "🔊 說話中...";
+                    };
+                    audio.onended = () => {
+                        isProcessing = false;
+                        main.classList.remove('speaking');
+                        status.textContent = "點擊說話";
+                        hint.textContent = "告訴我你想吃什麼";
+                        showRestaurants();
+                    };
+                    audio.onerror = () => {
+                        // Fallback to browser TTS
+                        speakWithBrowserTTS(text);
+                    };
+                    audio.play();
+                } else {
+                    speakWithBrowserTTS(text);
+                }
+            })
+            .catch(err => {
+                console.error('Minimax TTS error:', err);
+                speakWithBrowserTTS(text);
+            });
+        }
+        
+        function speakWithBrowserTTS(text) {
+            const main = document.getElementById('voiceMain');
+            const status = document.getElementById('voiceStatus');
+            status.textContent = "🔊 說話中...";
+            
+            if ('speechSynthesis' in window) {
+                utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.1;
+                utterance.pitch = 1;
+                utterance.lang = 'zh-TW';
+                
+                utterance.onend = () => {
+                    isProcessing = false;
+                    main.classList.remove('speaking');
+                    status.textContent = "點擊說話";
+                    showRestaurants();
+                };
+                
+                speechSynthesis.speak(utterance);
+            } else {
                 isProcessing = false;
                 showRestaurants();
             }
@@ -766,6 +861,14 @@
         
         // Auto-test voice on load
         window.addEventListener('load', () => {
+            // Try to get Minimax config from URL or use defaults
+            const urlParams = new URLSearchParams(window.location.search);
+            const mmKey = urlParams.get('mmKey');
+            const mmGroup = urlParams.get('mmGroup');
+            
+            if (mmKey) MINIMAX_API_KEY = mmKey;
+            if (mmGroup) MINIMAX_GROUP_ID = mmGroup;
+            
             // Delay to ensure user interaction
             setTimeout(() => {
                 // Try to get attention
