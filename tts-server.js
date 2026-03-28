@@ -68,10 +68,10 @@ const server = http.createServer(async (req, res) => {
         return;
     }
     
-    // Health check
-    if (req.url === '/health') {
+    // Health check - respond immediately for Railway
+    if (req.url === '/health' || req.url === '/_health') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ status: 'ok' }));
+        res.end(JSON.stringify({ status: 'ok', time: Date.now() }));
         return;
     }
     
