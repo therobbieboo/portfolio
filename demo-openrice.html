@@ -767,30 +767,46 @@
                 if (data.data && data.data.audio) {
                     // Convert hex string to audio (Minimax returns hex, not base64)
                     const hexString = data.data.audio;
+                    console.log('Hex length:', hexString.length, 'First chars:', hexString.substring(0, 20));
+                    
                     const audioBytes = new Uint8Array(hexString.length / 2);
                     for (let i = 0; i < hexString.length; i += 2) {
                         audioBytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
                     }
                     
+                    console.log('Audio bytes length:', audioBytes.length, 'First bytes:', audioBytes[0], audioBytes[1], audioBytes[2], audioBytes[3]);
+                    
                     const blob = new Blob([audioBytes], { type: 'audio/wav' });
+                    console.log('Blob size:', blob.size, 'Blob type:', blob.type);
                     const audioUrl = URL.createObjectURL(blob);
+                    console.log('Audio URL:', audioUrl);
                     
                     const audio = new Audio(audioUrl);
-                    audio.onplay = () => {
+                    
+                    audio.onloadedmetadata = () => {
+                        console.log('Audio duration:', audio.duration);
+                    };
+                    
+                    audio.oncanplay = () => {
+                        console.log('Audio can play, starting...');
                         main.classList.add('speaking');
                         status.textContent = "🔊 說話中...";
+                        audio.play().catch(e => console.error('Play failed:', e));
                     };
+                    
                     audio.onended = () => {
                         isProcessing = false;
                         main.classList.remove('speaking');
                         status.textContent = "點擊說話";
                         showRestaurants();
                     };
+                    
                     audio.onerror = (e) => {
-                        console.error('Audio play error:', e);
+                        console.error('Audio error:', e);
+                        console.error('Audio error code:', audio.error ? audio.error.code : 'unknown');
+                        console.error('Audio src:', audio.src);
                         speakWithBrowserTTS(text);
                     };
-                    audio.play();
                 } else if (data.base_resp) {
                     console.error('Minimax error:', data.base_resp);
                     speakWithBrowserTTS(text);
