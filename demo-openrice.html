@@ -588,7 +588,8 @@
             chatLog.scrollTop = chatLog.scrollHeight;
         }
         
-        // TODO: Add your OpenAI API key here
+        // NOTE: API key must be provided by user
+        // Ask Luke for the key or use environment variable
         let OPENAI_API_KEY = null;
         
         function processVoiceCommand(text) {
@@ -600,14 +601,23 @@
             main.classList.remove('listening');
             main.classList.add('speaking');
             
-            // Check if API key is configured
+            // Check if API key is configured - show input if not
             if (!OPENAI_API_KEY) {
-                status.textContent = "需設定 API Key";
-                hint.textContent = "請問要提供 API Key 嗎？";
-                addVoiceMessage('⚠️ 需要 API Key 才能使用 AI 功能，請提供 key', 'ai');
-                isProcessing = false;
-                main.classList.remove('speaking');
-                return;
+                status.textContent = "需要 API Key";
+                hint.textContent = "請提供 OpenAI API Key";
+                addVoiceMessage('⚠️ 需要 OpenAI API Key。請在你的 openclaw.json 中設定 skills.openai-api.apiKey', 'ai');
+                
+                // Try to get key from URL parameter as fallback
+                const urlParams = new URLSearchParams(window.location.search);
+                const keyFromUrl = urlParams.get('key');
+                if (keyFromUrl) {
+                    OPENAI_API_KEY = keyFromUrl;
+                    addVoiceMessage('✅ 從 URL 找到 API Key，開始連線...', 'ai');
+                } else {
+                    isProcessing = false;
+                    main.classList.remove('speaking');
+                    return;
+                }
             }
             
             status.textContent = "AI 思考中...";
